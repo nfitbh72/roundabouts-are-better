@@ -1,0 +1,8 @@
+create the basic framework for our game.
+
+we need:
+- an intro screen - display the text in assets/txt/intro.txt in white text on a back background - we move to the title screen by clicking LMB or space/enter
+- a title screen - which displays "Roundabouts Are Better" in large text (white on back background) with "Play", "Settings" and "Exit" buttons
+- the exit button should exit the game and close the application
+
+in the future, play button will start the game, dont start this yet

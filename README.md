@@ -1,4 +1,4 @@
-# Bricks Game
+# Roundabouts Are Better
 
 A game built with Electron and TypeScript.
 

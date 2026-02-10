@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 
 let mainWindow: BrowserWindow | null = null;
@@ -22,6 +22,11 @@ function createWindow(): void {
 
 app.whenReady().then(() => {
   createWindow();
+
+  // Handle quit-app IPC event
+  ipcMain.on('quit-app', () => {
+    app.quit();
+  });
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
