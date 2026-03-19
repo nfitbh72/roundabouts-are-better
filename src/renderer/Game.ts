@@ -1,6 +1,8 @@
 import { GameState } from './types';
 import { IntroScreen } from './screens/IntroScreen';
 import { TitleScreen } from './screens/TitleScreen';
+import { LevelManager } from './levels/LevelManager';
+import { BaseLevel } from './levels/BaseLevel';
 
 export class Game {
   private canvas: HTMLCanvasElement;
@@ -11,6 +13,10 @@ export class Game {
   // Screens
   private introScreen: IntroScreen;
   private titleScreen: TitleScreen;
+
+  // Level management
+  private levelManager: LevelManager;
+  private currentLevel: BaseLevel | null = null;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -27,6 +33,9 @@ export class Game {
       () => this.handleSettings(),
       () => this.handleExit()
     );
+
+    // Initialize level manager
+    this.levelManager = new LevelManager();
 
     this.setupCanvas();
     this.setupInputHandlers();
@@ -66,6 +75,8 @@ export class Game {
         this.transitionToTitle();
       } else if (this.state === GameState.TITLE) {
         this.titleScreen.handleClick(x, y);
+      } else if (this.state === GameState.PLAYING && this.currentLevel) {
+        this.currentLevel.handleClick(x, y);
       }
     });
 
@@ -76,6 +87,8 @@ export class Game {
 
       if (this.state === GameState.TITLE) {
         this.titleScreen.handleMouseMove(x, y);
+      } else if (this.state === GameState.PLAYING && this.currentLevel) {
+        this.currentLevel.handleMouseMove(x, y);
       }
     });
   }
@@ -85,8 +98,9 @@ export class Game {
   }
 
   private handlePlay(): void {
-    // TODO: Implement play functionality
-    console.log('Play button clicked - not implemented yet');
+    // Load level 1 and start playing
+    this.currentLevel = this.levelManager.loadLevel(1);
+    this.state = GameState.PLAYING;
   }
 
   private handleSettings(): void {
@@ -136,7 +150,9 @@ export class Game {
         // TODO: Settings screen update
         break;
       case GameState.PLAYING:
-        // TODO: Game update
+        if (this.currentLevel) {
+          this.currentLevel.update(deltaTime);
+        }
         break;
     }
   }
@@ -153,7 +169,9 @@ export class Game {
         // TODO: Settings screen render
         break;
       case GameState.PLAYING:
-        // TODO: Game render
+        if (this.currentLevel) {
+          this.currentLevel.render(this.ctx, this.canvas.width, this.canvas.height);
+        }
         break;
     }
   }
